@@ -149,6 +149,7 @@ io.on("connection", socket => {
                 );
 
                 sendTotal(user.id);
+                console.log("Expense deleted");
             }
         );
     });
