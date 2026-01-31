@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>Expense Tracker</h2>
+
+        <h3>Total: Rs.<span id="total">0</span></h3>
+
+        <input id="title" placeholder="Expense title">
+        <input id="amount" placeholder="Amount">
+        <input type="hidden" id="editId">
+
+        <button onclick="saveExpense()">Save Expense</button>
+        <button onclick="logout()" style="background:#dc3545;margin-top:10px;">Logout
+        </button>
+
+        <ul id="list"></ul>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: "Quicksand", sans-serif;
+}
+
+body {
+    background: #f2f2f2;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    background: #ffffff;
+    padding: 30px;
+    width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.card h2 {
+    margin-bottom: 20px;
+}
+
+.card input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.card button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.card button:hover {
+    background: #0056b3;
+}
+
+.card p {
+    margin-top: 15px;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.card a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.card a:hover {
+    text-decoration: underline;
+}
+
+input {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.card ul {
+    margin-top: 15px;
+    width: 100%;
+    padding: 0;
+}
+
+.card li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+}
+
+.card li button {
+    width: auto;
+    padding: 5px 8px;
+    font-size: 12px;
+}
+
+.expense-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.expense-text {
+    font-size: 14px;
+}
+
+.btn-group {
+    display: flex;
+    gap: 5px;
+    margin-top: -10px;
+}
+
+.btn-group button {
+    padding: 5px 8px;
+    font-size: 12px;
+}

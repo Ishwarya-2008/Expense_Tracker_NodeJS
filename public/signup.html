@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>Sign Up</h2>
+
+        <input id="name" placeholder="Name">
+        <input id="email" placeholder="Email">
+        <input id="password" type="password" placeholder="Password">
+
+        <button onclick="signup()">Sign Up</button>
+
+        <p>Already have an account?
+            <a href="login.html">Login</a>
+        </p>
+    </div>
+
+    <script>
+        function signup() {
+            let name = document.getElementById("name");
+            let email = document.getElementById("email");
+            let password = document.getElementById("password");
+            fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: name.value,
+                    email: email.value,
+                    password: password.value
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.msg.includes("success")) {
+                        window.location.href = "login.html";
+                    }
+                });
+        }
+    </script>
+
+</body>
+
+</html>
