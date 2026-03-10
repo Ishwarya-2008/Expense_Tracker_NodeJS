@@ -155,9 +155,12 @@ io.on("connection", socket => {
     });
 });
 
-server.listen(8044, (err) =>{
-    if (err) {
-        console.log(err);
+const PORT = process.env.PORT || 8044;
+
+server.listen(PORT, (err) => {
+    if(err){
+        console.error("Server error:", err);
     }
-    console.log("Server running on http://localhost:8044")
+    console.log("Server running on port " + PORT);
 });
+
