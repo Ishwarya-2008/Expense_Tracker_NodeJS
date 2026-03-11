@@ -34,7 +34,13 @@
                     password: password.value
                 })
             })
-                .then(res => res.json())
+                .then(async res => {
+                    const data = await res.json().catch(() => ({ msg: "Login failed" }));
+                    if (!res.ok) {
+                        throw new Error(data.msg || "Login failed");
+                    }
+                    return data;
+                })
                 .then(data => {
                     if (data.token) {
                         localStorage.setItem("token", data.token);
@@ -42,6 +48,9 @@
                     } else {
                         alert(data.msg || "Login failed");
                     }
+                })
+                .catch(err => {
+                    alert(err.message || "Login failed");
                 });
         }
     </script>

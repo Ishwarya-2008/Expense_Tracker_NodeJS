@@ -47,11 +47,20 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+        return res.status(400).json({ msg: "Email and password are required" });
+    }
+
     db.query(
         "SELECT * FROM users WHERE email=? AND password=?",
         [email, password],
         (err, data) => {
-            if (data.length === 0)
+            if (err) {
+                console.error("Login DB error:", err.code || err.message);
+                return res.status(500).json({ msg: "Database connection error" });
+            }
+
+            if (!Array.isArray(data) || data.length === 0)
                 return res.status(400).json({ msg: "Invalid login" });
 
             const token = jwt.sign({ id: data[0].id }, SECRET, {
