@@ -23,14 +23,14 @@ const db = mysql.createPool({
         : 10000,
     ssl: useSsl
         ? {
-            rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== "false"
+            rejectUnauthorized:"false"
         }
         : undefined
 });
 
 db.getConnection((err, connection) => {
     if (err) {
-        console.error("MySQL initial connection failed:", err.code || err.message);
+        console.error("MySQL initial connection failed:", err);
         return;
     }
 
