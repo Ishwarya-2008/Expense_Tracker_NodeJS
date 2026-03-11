@@ -16,6 +16,46 @@ app.use(express.static(path.join(__dirname,"public")));
 
 const SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
+function initializeDatabase() {
+    const createUsersTable = `
+        CREATE TABLE IF NOT EXISTS users (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(191) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB;
+    `;
+
+    const createExpensesTable = `
+        CREATE TABLE IF NOT EXISTS expenses (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            title VARCHAR(255) NOT NULL,
+            amount DECIMAL(10,2) NOT NULL,
+            category VARCHAR(100) DEFAULT 'General',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_user_id (user_id)
+        ) ENGINE=InnoDB;
+    `;
+
+    db.query(createUsersTable, err => {
+        if (err) {
+            console.error("Create users table error:", err.code, err.sqlMessage || err.message);
+            return;
+        }
+
+        db.query(createExpensesTable, err2 => {
+            if (err2) {
+                console.error("Create expenses table error:", err2.code, err2.sqlMessage || err2.message);
+                return;
+            }
+
+            console.log("Database schema ready");
+        });
+    });
+}
+
 app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok" });
 });
@@ -29,7 +69,7 @@ app.post("/register", (req, res) => {
 
     db.query("SELECT * FROM users WHERE email=?", [email], (err, data) => {
         if (err) {
-            console.error("Register select DB error:", err.code || err.message);
+            console.error("Register select DB error:", err.code, err.sqlMessage || err.message);
             return res.status(500).json({ msg: "Database connection error" });
         }
 
@@ -39,7 +79,7 @@ app.post("/register", (req, res) => {
 
         db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",[name, email, password],(err2, result) => {
                 if (err2) {
-                    console.error("Register insert DB error:", err2.code || err2.message);
+                    console.error("Register insert DB error:", err2.code, err2.sqlMessage || err2.message);
                     return res.status(500).json({ msg: "Database insert error" });
                 }
                 res.json({ msg: "Registered successfully" });
@@ -60,7 +100,7 @@ app.post("/login", (req, res) => {
         [email, password],
         (err, data) => {
             if (err) {
-                console.error("Login DB error:", err.code || err.message);
+                console.error("Login DB error:", err.code, err.sqlMessage || err.message);
                 return res.status(500).json({ msg: "Database connection error" });
             }
 
@@ -180,5 +220,6 @@ server.listen(PORT, (err) => {
     if(err){
         console.error("Server error:", err);
     }
+    initializeDatabase();
     console.log("Server running on port " + PORT);
 });
