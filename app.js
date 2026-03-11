@@ -28,7 +28,10 @@ app.post("/register", (req, res) => {
     }
 
     db.query("SELECT * FROM users WHERE email=?", [email], (err, data) => {
-        if (err) return res.status(500).json({ msg: "DB error" });
+        if (err) {
+            console.error("Register select DB error:", err.code || err.message);
+            return res.status(500).json({ msg: "Database connection error" });
+        }
 
         if (data.length > 0) {
             return res.status(400).json({ msg: "Email already registered" });
@@ -36,7 +39,8 @@ app.post("/register", (req, res) => {
 
         db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",[name, email, password],(err2, result) => {
                 if (err2) {
-                    return res.status(500).json({ msg: "DB insert error" });
+                    console.error("Register insert DB error:", err2.code || err2.message);
+                    return res.status(500).json({ msg: "Database insert error" });
                 }
                 res.json({ msg: "Registered successfully" });
             }

@@ -37,11 +37,22 @@
                     password: password.value
                 })
             })
-                .then(res => res.json())
+                .then(async res => {
+                    const data = await res.json().catch(() => ({ msg: "Signup failed" }));
+                    if (!res.ok) {
+                        throw new Error(data.msg || "Signup failed");
+                    }
+                    return data;
+                })
                 .then(data => {
                     if (data.msg.includes("success")) {
                         window.location.href = "login.html";
+                    } else {
+                        alert(data.msg || "Signup failed");
                     }
+                })
+                .catch(err => {
+                    alert(err.message || "Signup failed");
                 });
         }
     </script>
