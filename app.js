@@ -9,10 +9,10 @@ const path = require("path");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIO(server); 
+const io = socketIO(server);
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname, "public")));
 
 const SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
@@ -77,13 +77,13 @@ app.post("/register", (req, res) => {
             return res.status(400).json({ msg: "Email already registered" });
         }
 
-        db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",[name, email, password],(err2, result) => {
-                if (err2) {
-                    console.error("Register insert DB error:", err2.code, err2.sqlMessage || err2.message);
-                    return res.status(500).json({ msg: "Database insert error" });
-                }
-                res.json({ msg: "Registered successfully" });
+        db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, password], (err2, result) => {
+            if (err2) {
+                console.error("Register insert DB error:", err2.code, err2.sqlMessage || err2.message);
+                return res.status(500).json({ msg: "Database insert error" });
             }
+            res.json({ msg: "Registered successfully" });
+        }
         );
     });
 });
@@ -217,7 +217,7 @@ io.on("connection", socket => {
 const PORT = process.env.PORT || 10000;
 
 server.listen(PORT, (err) => {
-    if(err){
+    if (err) {
         console.error("Server error:", err);
     }
     initializeDatabase();
