@@ -16,6 +16,10 @@ app.use(express.static(path.join(__dirname,"public")));
 
 const SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+});
+
 app.post("/register", (req, res) => {
     const { name, email, password } = req.body;
 
