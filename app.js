@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
@@ -12,7 +14,7 @@ const io = socketIO(server);
 app.use(express.json());
 app.use(express.static(path.join(__dirname,"public")));
 
-const SECRET = "secretkey";
+const SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 app.post("/register", (req, res) => {
     const { name, email, password } = req.body;
