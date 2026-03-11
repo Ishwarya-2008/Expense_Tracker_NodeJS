@@ -7,7 +7,13 @@ if (missingEnvVars.length > 0) {
     throw new Error(`Missing required database environment variables: ${missingEnvVars.join(", ")}`);
 }
 
-const useSsl = process.env.DB_SSL === "true";
+const useSsl = ["true", "1", "yes"].includes(
+    String(process.env.DB_SSL || "").toLowerCase()
+);
+
+const rejectUnauthorized = !["false", "0", "no"].includes(
+    String(process.env.DB_SSL_REJECT_UNAUTHORIZED || "false").toLowerCase()
+);
 
 const db = mysql.createPool({
     host: process.env.DB_HOST,
@@ -23,7 +29,7 @@ const db = mysql.createPool({
         : 10000,
     ssl: useSsl
         ? {
-            rejectUnauthorized:"false"
+            rejectUnauthorized
         }
         : undefined
 });
