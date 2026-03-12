@@ -69,19 +69,22 @@ app.post("/register", (req, res) => {
 
     db.query("SELECT * FROM users WHERE email=?", [email], (err, data) => {
         if (err) {
-            console.error("Register select DB error:", err.code, err.sqlMessage || err.message);
+            console.error("[REGISTER SELECT ERROR]", err.code, err.sqlMessage || err.message);
             return res.status(500).json({ msg: "Database connection error" });
         }
+
+        console.log(`[REGISTER SELECT] Email: ${email}, Found: ${data.length} users`);
 
         if (data.length > 0) {
             return res.status(400).json({ msg: "Email already registered" });
         }
 
         db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, password], (err2, result) => {
-            if (err2) {
-                console.error("Register insert DB error:", err2.code, err2.sqlMessage || err2.message);
-                return res.status(500).json({ msg: "Database insert error" });
-            }
+                if (err2) {
+                    console.error("[REGISTER INSERT ERROR]", err2.code, err2.sqlMessage || err2.message);
+                    return res.status(500).json({ msg: "Database insert error" });
+                }
+                console.log(`[REGISTER SUCCESS] Email: ${email}, ID: ${result.insertId}`);
             res.json({ msg: "Registered successfully" });
         }
         );
@@ -100,9 +103,11 @@ app.post("/login", (req, res) => {
         [email, password],
         (err, data) => {
             if (err) {
-                console.error("Login DB error:", err.code, err.sqlMessage || err.message);
+                console.error("[LOGIN ERROR]", err.code, err.sqlMessage || err.message);
                 return res.status(500).json({ msg: "Database connection error" });
             }
+
+            console.log(`[LOGIN ATTEMPT] Email: ${email}, Found: ${Array.isArray(data) ? data.length : 0} users`);
 
             if (!Array.isArray(data) || data.length === 0)
                 return res.status(400).json({ msg: "Invalid login" });
@@ -111,6 +116,7 @@ app.post("/login", (req, res) => {
                 expiresIn: "1h"
             });
 
+            console.log(`[LOGIN SUCCESS] Email: ${email}, ID: ${data[0].id}`);
             res.json({ token });
         }
     );
@@ -143,15 +149,27 @@ io.on("connection", socket => {
         const user = verifyToken(data.token);
         if (!user) return;
 
+        console.log(`[ADD EXPENSE] User: ${user.id}, Title: ${data.title}, Amount: ${data.amount}`);
+
         db.query(
             "INSERT INTO expenses (user_id,title,amount,category) VALUES (?,?,?,?)",
             [user.id, data.title, data.amount, data.category],
             (err3, result3) => {
+                if (err3) {
+                    console.error("[ADD EXPENSE ERROR]", err3.code, err3.sqlMessage || err3.message);
+                    socket.emit("message", "Failed to add expense");
+                    return;
+                }
+
+                console.log(`[ADD EXPENSE SUCCESS] ID: ${result3.insertId}`);
                 socket.emit("message", "Added");
                 db.query(
                     "SELECT * FROM expenses WHERE user_id=?",
                     [user.id],
-                    (err4, rows) => socket.emit("expenses", rows)
+                    (err4, rows) => {
+                        console.log(`[GET EXPENSES] User: ${user.id}, Count: ${Array.isArray(rows) ? rows.length : 0}`);
+                        socket.emit("expenses", rows);
+                    }
                 );
 
                 sendTotal(user.id);
