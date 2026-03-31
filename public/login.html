@@ -3,29 +3,52 @@
 
 <head>
     <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    
 </head>
 
-<body>
+<body class="auth-page">
+    <main class="auth-shell solo">
+        <section class="auth-card">
+            <div class="auth-card-header">
+                <p class="eyebrow">Expense Tracker</p>
+                <h2>Login</h2>
+                <p>Use your registered email and password to continue.</p>
+            </div>
 
-    <div class="card">
-        <h2>Login</h2>
+            <p id="authStatus" class="status-text auth-inline-status" aria-live="polite"></p>
 
-        <input id="email" placeholder="Email">
-        <input id="password" type="password" placeholder="Password">
+            <label class="field">
+                <span>Email</span>
+                <input id="email" type="email" placeholder="name@example.com">
+            </label>
 
-        <button onclick="login()">Login</button>
+            <label class="field">
+                <span>Password</span>
+                <input id="password" type="password" placeholder="Enter password">
+            </label>
 
-        <p>Don't have an account?
-            <a href="signup.html">Sign up</a>
-        </p>
-    </div>
+            <button class="primary-button" onclick="login()" type="button">Login</button>
+
+            <p class="auth-switch">Don't have an account?
+                <a href="signup.html">Sign up</a>
+            </p>
+        </section>
+    </main>
 
     <script>
+        function setStatus(message) {
+            const status = document.getElementById("authStatus");
+            status.textContent = message || "";
+        }
+
         function login() {
             let email = document.getElementById("email");
             let password = document.getElementById("password");
+
+            setStatus("Checking credentials...");
+
             fetch("/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -46,13 +69,19 @@
                         localStorage.setItem("token", data.token);
                         window.location.href = "index.html";
                     } else {
-                        alert(data.msg || "Login failed");
+                        setStatus(data.msg || "Login failed");
                     }
                 })
                 .catch(err => {
-                    alert(err.message || "Login failed");
+                    setStatus(err.message || "Login failed");
                 });
         }
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                login();
+            }
+        });
     </script>
 
 </body>

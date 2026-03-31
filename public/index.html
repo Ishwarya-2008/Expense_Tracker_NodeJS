@@ -3,26 +3,99 @@
 
 <head>
     <title>Expense Tracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="dashboard-page">
+    <main class="dashboard-shell">
+        <section class="dashboard-hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Personal finance overview</p>
+                <h1>Track daily spending without losing the bigger picture.</h1>
+                <p class="hero-text">
+                    Add, edit, and review expenses from one focused workspace built for quick updates.
+                </p>
+            </div>
 
-    <div class="card">
-        <h2>Expense Tracker</h2>
+            <div class="hero-total-card">
+                <span class="stat-label">Total spent</span>
+                <h2>Rs.<span id="total">0</span></h2>
+                <p id="summaryDate">Updated just now</p>
+            </div>
+        </section>
 
-        <h3>Total: Rs.<span id="total">0</span></h3>
+        <section class="dashboard-grid">
+            <article class="panel composer-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Expense composer</p>
+                        <h3 id="formHeading">Add a new expense</h3>
+                    </div>
+                    <button id="logoutButton" class="ghost-button" type="button">Logout</button>
+                </div>
 
-        <input id="title" placeholder="Expense title">
-        <input id="amount" placeholder="Amount">
-        <input type="hidden" id="editId">
+                <div class="form-grid">
+                    <label class="field">
+                        <span>Expense title</span>
+                        <input id="title" placeholder="Groceries, fuel, internet bill">
+                    </label>
 
-        <button onclick="saveExpense()">Save Expense</button>
-        <button onclick="logout()" style="background:#dc3545;margin-top:10px;">Logout
-        </button>
+                    <label class="field">
+                        <span>Amount</span>
+                        <input id="amount" type="number" min="0" step="0.01" placeholder="0.00">
+                    </label>
+                </div>
 
-        <ul id="list"></ul>
-    </div>
+                <input type="hidden" id="editId">
+
+                <div class="action-row">
+                    <button id="saveButton" class="primary-button" type="button">Save Expense</button>
+                    <button id="cancelEditButton" class="secondary-button hidden" type="button">Cancel Edit</button>
+                </div>
+
+                <p id="appStatus" class="status-text" aria-live="polite"></p>
+            </article>
+
+            <aside class="panel insights-panel">
+                <div class="panel-header compact">
+                    <div>
+                        <p class="eyebrow">Quick stats</p>
+                        <h3>Snapshot</h3>
+                    </div>
+                </div>
+
+                <div class="insight-list">
+                    <div class="insight-card warm">
+                        <span class="stat-label">Entries</span>
+                        <strong id="expenseCount">0</strong>
+                    </div>
+                    <div class="insight-card cool">
+                        <span class="stat-label">Largest expense</span>
+                        <strong id="largestExpense">Rs.0</strong>
+                    </div>
+                </div>
+            </aside>
+        </section>
+
+        <section class="panel list-panel">
+            <div class="panel-header compact">
+                <div>
+                    <p class="eyebrow">Recent activity</p>
+                    <h3>Your expenses</h3>
+                </div>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <h4>No expenses yet</h4>
+                <p>Start by adding your first item. It will appear here with quick edit and delete actions.</p>
+            </div>
+
+            <ul id="list" class="expense-list"></ul>
+        </section>
+    </main>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 

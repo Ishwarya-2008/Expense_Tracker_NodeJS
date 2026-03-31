@@ -3,31 +3,58 @@
 
 <head>
     <title>Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    
 </head>
 
-<body>
+<body class="auth-page">
+    <main class="auth-shell solo">
+        <section class="auth-card">
+            <div class="auth-card-header">
+                <p class="eyebrow">Expense Tracker</p>
+                <h2>Sign Up</h2>
+                <p>Set up a profile to start tracking your spending in one place.</p>
+            </div>
 
-    <div class="card">
-        <h2>Sign Up</h2>
+            <p id="authStatus" class="status-text auth-inline-status" aria-live="polite"></p>
 
-        <input id="name" placeholder="Name">
-        <input id="email" placeholder="Email">
-        <input id="password" type="password" placeholder="Password">
+            <label class="field">
+                <span>Name</span>
+                <input id="name" placeholder="Your name">
+            </label>
 
-        <button onclick="signup()">Sign Up</button>
+            <label class="field">
+                <span>Email</span>
+                <input id="email" type="email" placeholder="name@example.com">
+            </label>
 
-        <p>Already have an account?
-            <a href="login.html">Login</a>
-        </p>
-    </div>
+            <label class="field">
+                <span>Password</span>
+                <input id="password" type="password" placeholder="Create password">
+            </label>
+
+            <button class="primary-button" onclick="signup()" type="button">Create Account</button>
+
+            <p class="auth-switch">Already have an account?
+                <a href="login.html">Login</a>
+            </p>
+        </section>
+    </main>
 
     <script>
+        function setStatus(message) {
+            const status = document.getElementById("authStatus");
+            status.textContent = message || "";
+        }
+
         function signup() {
             let name = document.getElementById("name");
             let email = document.getElementById("email");
             let password = document.getElementById("password");
+
+            setStatus("Creating account...");
+
             fetch("/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -46,15 +73,22 @@
                 })
                 .then(data => {
                     if (data.msg.includes("success")) {
+                        setStatus("Account created. Redirecting to login...");
                         window.location.href = "login.html";
                     } else {
-                        alert(data.msg || "Signup failed");
+                        setStatus(data.msg || "Signup failed");
                     }
                 })
                 .catch(err => {
-                    alert(err.message || "Signup failed");
+                    setStatus(err.message || "Signup failed");
                 });
         }
+
+        document.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                signup();
+            }
+        });
     </script>
 
 </body>
