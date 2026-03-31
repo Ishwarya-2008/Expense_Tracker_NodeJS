@@ -320,7 +320,11 @@ a:hover {
     display: grid;
     grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
     gap: 22px;
-    align-items: stretch;
+    align-items: start;
+}
+
+.dashboard-hero .composer-panel {
+    margin: 0;
 }
 
 .hero-copy {

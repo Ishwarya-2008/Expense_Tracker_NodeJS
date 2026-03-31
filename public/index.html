@@ -11,22 +11,14 @@
 <body class="dashboard-page">
     <main class="dashboard-shell">
         <section class="dashboard-hero">
-            <div class="panel-header">
-                <div>
-                    <p class="eyebrow">Expense composer</p>
-                    <h3>Add a new expense</h3>
-                </div>
-                <button id="logoutButton" class="ghost-button" type="button">Logout</button>
-            </div>
-            <div class="hero-total-card">
-                <span class="stat-label">Total spent</span>
-                <h2>Rs.<span id="total">0</span></h2>
-                <p id="summaryDate">Updated just now</p>
-            </div>
-        </section>
-
-        <section class="dashboard-grid">
             <article class="panel composer-panel">
+                <div class="panel-header">
+                    <div>
+                        <p class="eyebrow">Expense composer</p>
+                        <h3 id="formHeading">Add a new expense</h3>
+                    </div>
+                    <button id="logoutButton" class="ghost-button" type="button">Logout</button>
+                </div>
 
                 <div class="form-grid">
                     <label class="field">
@@ -40,12 +32,21 @@
                     </label>
                 </div>
 
+                <input type="hidden" id="editId">
+
                 <div class="action-row">
                     <button id="saveButton" class="primary-button" type="button">Save Expense</button>
+                    <button id="cancelEditButton" class="secondary-button hidden" type="button">Cancel Edit</button>
                 </div>
 
                 <p id="appStatus" class="status-text" aria-live="polite"></p>
             </article>
+
+            <div class="hero-total-card">
+                <span class="stat-label">Total spent</span>
+                <h2>Rs.<span id="total">0</span></h2>
+                <p id="summaryDate">Updated just now</p>
+            </div>
         </section>
 
         <section class="panel list-panel">
