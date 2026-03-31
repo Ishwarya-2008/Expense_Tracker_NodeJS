@@ -11,14 +11,13 @@
 <body class="dashboard-page">
     <main class="dashboard-shell">
         <section class="dashboard-hero">
-            <div class="hero-copy">
-                <p class="eyebrow">Personal finance overview</p>
-                <h1>Track daily spending without losing the bigger picture.</h1>
-                <p class="hero-text">
-                    Add and review expenses from one focused workspace built for quick updates.
-                </p>
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">Expense composer</p>
+                    <h3>Add a new expense</h3>
+                </div>
+                <button id="logoutButton" class="ghost-button" type="button">Logout</button>
             </div>
-
             <div class="hero-total-card">
                 <span class="stat-label">Total spent</span>
                 <h2>Rs.<span id="total">0</span></h2>
@@ -28,13 +27,6 @@
 
         <section class="dashboard-grid">
             <article class="panel composer-panel">
-                <div class="panel-header">
-                    <div>
-                        <p class="eyebrow">Expense composer</p>
-                        <h3>Add a new expense</h3>
-                    </div>
-                    <button id="logoutButton" class="ghost-button" type="button">Logout</button>
-                </div>
 
                 <div class="form-grid">
                     <label class="field">
@@ -54,26 +46,6 @@
 
                 <p id="appStatus" class="status-text" aria-live="polite"></p>
             </article>
-
-            <aside class="panel insights-panel">
-                <div class="panel-header compact">
-                    <div>
-                        <p class="eyebrow">Quick stats</p>
-                        <h3>Snapshot</h3>
-                    </div>
-                </div>
-
-                <div class="insight-list">
-                    <div class="insight-card warm">
-                        <span class="stat-label">Entries</span>
-                        <strong id="expenseCount">0</strong>
-                    </div>
-                    <div class="insight-card cool">
-                        <span class="stat-label">Largest expense</span>
-                        <strong id="largestExpense">Rs.0</strong>
-                    </div>
-                </div>
-            </aside>
         </section>
 
         <section class="panel list-panel">
