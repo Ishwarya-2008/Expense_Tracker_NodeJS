@@ -15,7 +15,7 @@
                 <p class="eyebrow">Personal finance overview</p>
                 <h1>Track daily spending without losing the bigger picture.</h1>
                 <p class="hero-text">
-                    Add, edit, and review expenses from one focused workspace built for quick updates.
+                    Add and review expenses from one focused workspace built for quick updates.
                 </p>
             </div>
 
@@ -31,7 +31,7 @@
                 <div class="panel-header">
                     <div>
                         <p class="eyebrow">Expense composer</p>
-                        <h3 id="formHeading">Add a new expense</h3>
+                        <h3>Add a new expense</h3>
                     </div>
                     <button id="logoutButton" class="ghost-button" type="button">Logout</button>
                 </div>
@@ -48,11 +48,8 @@
                     </label>
                 </div>
 
-                <input type="hidden" id="editId">
-
                 <div class="action-row">
                     <button id="saveButton" class="primary-button" type="button">Save Expense</button>
-                    <button id="cancelEditButton" class="secondary-button hidden" type="button">Cancel Edit</button>
                 </div>
 
                 <p id="appStatus" class="status-text" aria-live="polite"></p>
@@ -89,7 +86,7 @@
 
             <div id="emptyState" class="empty-state">
                 <h4>No expenses yet</h4>
-                <p>Start by adding your first item. It will appear here with quick edit and delete actions.</p>
+                <p>Start by adding your first expense. It will appear here.</p>
             </div>
 
             <ul id="list" class="expense-list"></ul>

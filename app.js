@@ -140,6 +140,11 @@ io.on("connection", socket => {
             "SELECT SUM(amount) AS total FROM expenses WHERE user_id=?",
             [userId],
             (err, result) => {
+                if (err || !result || !result[0]) {
+                    console.error("[SEND TOTAL ERROR]", err && err.message);
+                    socket.emit("totalAmount", 0);
+                    return;
+                }
                 socket.emit("totalAmount", result[0].total || 0);
             }
         );
@@ -167,8 +172,13 @@ io.on("connection", socket => {
                     "SELECT * FROM expenses WHERE user_id=?",
                     [user.id],
                     (err4, rows) => {
+                        if (err4) {
+                            console.error("[GET EXPENSES ERROR]", err4.message);
+                            socket.emit("expenses", []);
+                            return;
+                        }
                         console.log(`[GET EXPENSES] User: ${user.id}, Count: ${Array.isArray(rows) ? rows.length : 0}`);
-                        socket.emit("expenses", rows);
+                        socket.emit("expenses", rows || []);
                     }
                 );
 
@@ -184,52 +194,20 @@ io.on("connection", socket => {
         db.query(
             "SELECT * FROM expenses WHERE user_id=?",
             [user.id],
-            (err, result) => socket.emit("expenses", result)
+            (err, result) => {
+                if (err) {
+                    console.error("[GET EXPENSES ERROR]", err.message);
+                    socket.emit("expenses", []);
+                    return;
+                }
+                socket.emit("expenses", result || []);
+            }
         );
 
         sendTotal(user.id);
     });
 
-    socket.on("updateExpense", data => {
-        const user = verifyToken(data.token);
-        if (!user) return;
 
-        db.query(
-            "UPDATE expenses SET title=?, amount=? WHERE id=?",
-            [data.title, data.amount, data.id],
-            (err5, result5) => {
-                socket.emit("message", "Updated");
-                db.query(
-                    "SELECT * FROM expenses WHERE user_id=?",
-                    [user.id],
-                    (err6, rows) => socket.emit("expenses", rows)
-                );
-
-                sendTotal(user.id);
-            }
-        );
-    });
-
-    socket.on("deleteExpense", data => {
-        const user = verifyToken(data.token);
-        if (!user) return;
-
-        db.query(
-            "DELETE FROM expenses WHERE id=?",
-            [data.id],
-            (err7, result7) => {
-                socket.emit("message", "Deleted");
-                db.query(
-                    "SELECT * FROM expenses WHERE user_id=?",
-                    [user.id],
-                    (err8, rows) => socket.emit("expenses", rows)
-                );
-
-                sendTotal(user.id);
-                console.log("Expense deleted");
-            }
-        );
-    });
 });
 
 const PORT = process.env.PORT || 10000;

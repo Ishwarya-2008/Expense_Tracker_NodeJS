@@ -6,30 +6,26 @@ if (!token) {
 const list = document.getElementById("list");
 const title = document.getElementById("title");
 const amount = document.getElementById("amount");
-const editId = document.getElementById("editId");
 const total = document.getElementById("total");
 const expenseCount = document.getElementById("expenseCount");
 const largestExpense = document.getElementById("largestExpense");
 const summaryDate = document.getElementById("summaryDate");
 const emptyState = document.getElementById("emptyState");
 const appStatus = document.getElementById("appStatus");
-const formHeading = document.getElementById("formHeading");
 const saveButton = document.getElementById("saveButton");
-const cancelEditButton = document.getElementById("cancelEditButton");
 const logoutButton = document.getElementById("logoutButton");
 
 let expenses = [];
 
 const socket = io();
 
-saveButton.addEventListener("click", saveExpense);
-cancelEditButton.addEventListener("click", resetForm);
+saveButton.addEventListener("click", addExpense);
 logoutButton.addEventListener("click", logout);
 
 [title, amount].forEach(field => {
     field.addEventListener("keydown", event => {
         if (event.key === "Enter") {
-            saveExpense();
+            addExpense();
         }
     });
 });
@@ -43,19 +39,11 @@ socket.on("message", message => {
     setStatus(message);
 });
 
-function saveExpense() {
+function addExpense() {
     const expenseTitle = title.value.trim();
     const expenseAmount = amount.value.trim();
 
-    if (editId && editId.value) {
-        socket.emit("updateExpense", {
-            id: editId.value,
-            title: expenseTitle,
-            amount: expenseAmount,
-            token
-        });
-        setStatus("Updating expense...");
-    } else if (expenseTitle && expenseAmount) {
+    if (expenseTitle && expenseAmount) {
         socket.emit("addExpense", {
             title: expenseTitle,
             amount: expenseAmount,
@@ -63,12 +51,11 @@ function saveExpense() {
             token
         });
         setStatus("Saving expense...");
+        title.value = "";
+        amount.value = "";
     } else {
         setStatus("Enter both title and amount.");
-        return;
     }
-
-    resetForm();
 }
 
 socket.emit("getExpenses", token);
@@ -80,22 +67,6 @@ socket.on("expenses", data => {
     updateSummaryTime();
 });
 
-function editExpense(id, t, a) {
-    editId.value = id;
-    title.value = t;
-    amount.value = a;
-    formHeading.textContent = "Edit expense";
-    saveButton.textContent = "Update Expense";
-    cancelEditButton.classList.remove("hidden");
-    setStatus("Editing selected expense.");
-    title.focus();
-}
-
-function deleteExpense(id) {
-    socket.emit("deleteExpense", { id, token });
-    setStatus("Deleting expense...");
-}
-
 socket.on("totalAmount", t => {
     total.innerText = formatAmount(t || 0);
 });
@@ -103,15 +74,6 @@ socket.on("totalAmount", t => {
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "login.html";
-}
-
-function resetForm() {
-    editId.value = "";
-    title.value = "";
-    amount.value = "";
-    formHeading.textContent = "Add a new expense";
-    saveButton.textContent = "Save Expense";
-    cancelEditButton.classList.add("hidden");
 }
 
 function renderExpenses(items) {
@@ -140,26 +102,7 @@ function renderExpenses(items) {
         copy.appendChild(titleText);
         copy.appendChild(metaText);
 
-        const actions = document.createElement("div");
-        actions.className = "expense-actions";
-
-        const editButton = document.createElement("button");
-        editButton.type = "button";
-        editButton.className = "expense-action edit";
-        editButton.textContent = "Edit";
-        editButton.addEventListener("click", () => editExpense(item.id, item.title, item.amount));
-
-        const deleteButton = document.createElement("button");
-        deleteButton.type = "button";
-        deleteButton.className = "expense-action delete";
-        deleteButton.textContent = "Delete";
-        deleteButton.addEventListener("click", () => deleteExpense(item.id));
-
-        actions.appendChild(editButton);
-        actions.appendChild(deleteButton);
-
         li.appendChild(copy);
-        li.appendChild(actions);
         list.appendChild(li);
     });
 }
