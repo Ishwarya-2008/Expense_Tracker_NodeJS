@@ -314,6 +314,10 @@ a:hover {
     max-width: 1180px;
     margin: 0 auto;
     padding: 32px 24px 48px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .dashboard-hero {
