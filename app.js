@@ -39,15 +39,15 @@ function initializeDatabase() {
         ) ENGINE=InnoDB;
     `;
 
-    db.query(createUsersTable, err => {
+    db.query(createUsersTable, (err) => {
         if (err) {
-            console.error("Create users table error:", err.code, err.sqlMessage || err.message);
+            console.error("Create users table error:", err.message);
             return;
         }
 
-        db.query(createExpensesTable, err2 => {
+        db.query(createExpensesTable, (err2) => {
             if (err2) {
-                console.error("Create expenses table error:", err2.code, err2.sqlMessage || err2.message);
+                console.error("Create expenses table error:", err2.message);
                 return;
             }
 
@@ -69,7 +69,7 @@ app.post("/register", (req, res) => {
 
     db.query("SELECT * FROM users WHERE email=?", [email], (err, data) => {
         if (err) {
-            console.error("[REGISTER SELECT ERROR]", err.code, err.sqlMessage || err.message);
+            console.error("[REGISTER SELECT ERROR]", err.message);
             return res.status(500).json({ msg: "Database connection error" });
         }
 
@@ -81,7 +81,7 @@ app.post("/register", (req, res) => {
 
         db.query("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, password], (err2, result) => {
                 if (err2) {
-                    console.error("[REGISTER INSERT ERROR]", err2.code, err2.sqlMessage || err2.message);
+                    console.error("[REGISTER INSERT ERROR]", err2.message);
                     return res.status(500).json({ msg: "Database insert error" });
                 }
                 console.log(`[REGISTER SUCCESS] Email: ${email}, ID: ${result.insertId}`);
@@ -103,7 +103,7 @@ app.post("/login", (req, res) => {
         [email, password],
         (err, data) => {
             if (err) {
-                console.error("[LOGIN ERROR]", err.code, err.sqlMessage || err.message);
+                console.error("[LOGIN ERROR]", err.message);
                 return res.status(500).json({ msg: "Database connection error" });
             }
 
@@ -156,7 +156,7 @@ io.on("connection", socket => {
             [user.id, data.title, data.amount, data.category],
             (err3, result3) => {
                 if (err3) {
-                    console.error("[ADD EXPENSE ERROR]", err3.code, err3.sqlMessage || err3.message);
+                    console.error("[ADD EXPENSE ERROR]", err3.message);
                     socket.emit("message", "Failed to add expense");
                     return;
                 }
